@@ -50,21 +50,6 @@ responsive_header = f"""
 # Inject the custom responsive header into the app
 st.markdown(responsive_header, unsafe_allow_html=True)
 
-# 3. Create a custom layout with vertical alignment
-# The vertical_alignment="center" perfectly aligns the image with the middle of the title
-col1, col2 = st.columns([1, 8], vertical_alignment="center")
-
-with col1:
-    # Display the image and adjust the width to align nicely with the text
-    # Increased slightly to 130 to balance the longer title
-    st.image(logo, width=200) 
-
-with col2:
-    # Display the exact title from your screenshot
-    st.title("Achala Digital Vaidya: Kitchen Pharmacy AI")
-st.caption("A smart health advisor based on Rajiv Dixit's Ayurvedic principles for joint and back pain.")
-st.write("---")
-
 # 3. The Core Knowledge System Prompt
 SYSTEM_PROMPT = """You are Rajiv Dixit AI, an expert consultant in Ayurveda and Vata-induced joint pain. Your goal is to help the common man reverse chronic back and joint pain using accessible, budget-friendly kitchen remedies.
 
