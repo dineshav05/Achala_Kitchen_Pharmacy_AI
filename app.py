@@ -67,13 +67,37 @@ for message in st.session_state.messages:
 
 import base64
 
-# 1. Add the file uploader to the UI
-uploaded_file = st.file_uploader("Upload a photo of your joint or a medical report (Optional)", type=["png", "jpg", "jpeg"])
+# 1. Initialize the payment state in the background
+if "premium_unlocked" not in st.session_state:
+    st.session_state.premium_unlocked = False
 
-# 2. Function to encode the image for the AI Engine
-def encode_image(upload):
-    return base64.b64encode(upload.getvalue()).decode('utf-8')
+st.write("### 🔍 Advanced Diagnostic Analysis")
 
+# 2. Check if the user has paid
+if not st.session_state.premium_unlocked:
+    st.info("🔒 **Premium Feature:** Upload a photo of your joint or a medical report for deep visual analysis and tailored dietary matching.")
+    
+    pay_col, info_col = st.columns([1, 2], vertical_alignment="center")
+    
+    with pay_col:
+        if st.button("Unlock Feature (₹49)"):
+            st.session_state.premium_unlocked = True
+            st.success("Payment Successful!")
+            st.rerun()
+            
+    with info_col:
+        st.caption("⚡ One-time fee per analysis. Pay securely via any UPI App (GPay, PhonePe, Paytm).")
+
+else:
+    # 3. This section unlocks ONLY after a successful payment
+    st.success("🔓 **Premium Active:** Visual Analysis Enabled")
+    
+    # YOUR REPLACED CODE LIVES HERE SAFELY NOW:
+    uploaded_file = st.file_uploader("Upload a photo of your joint or a medical report (PNG, JPG)", type=["png", "jpg", "jpeg"])
+    
+    def encode_image(upload):
+        import base64
+        return base64.b64encode(upload.getvalue()).decode('utf-8')
 
 # 6. Handle User Input
 if user_input := st.chat_input("Describe your pain or upload an image above..."):
