@@ -24,16 +24,17 @@ st.set_page_config(
     layout="centered"
 )
 
-# 3. Create a custom layout to place the logo right next to the main title
-# The [1, 8] ratio keeps the image column small and the title column wide
-col1, col2 = st.columns([1, 8])
+# 3. Create a custom layout with vertical alignment
+# The vertical_alignment="center" perfectly aligns the image with the middle of the title
+col1, col2 = st.columns([1, 8], vertical_alignment="center")
 
 with col1:
     # Display the image and adjust the width to align nicely with the text
-    st.image(logo, width=60) 
+    # Increased slightly to 70 to balance the longer title
+    st.image(logo, width=70) 
 
 with col2:
-    # Display the clean title
+    # Display the exact title from your screenshot
     st.title("Achala Digital Vaidya: The Kitchen Pharmacy AI")
 st.caption("A smart health advisor based on Rajiv Dixit's Ayurvedic principles for joint and back pain.")
 st.write("---")
