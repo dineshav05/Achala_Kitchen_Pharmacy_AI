@@ -19,7 +19,7 @@ logo = Image.open("Achala_Digital_Vaidya.png")
 
 # 2. Update the page configuration to use the image as the browser tab icon
 st.set_page_config(
-    page_title="Achala Digital Vaidya: The Kitchen Pharmacy AI", 
+    page_title="Achala Digital Vaidya: Kitchen Pharmacy AI", 
     page_icon=logo, 
     layout="centered"
 )
@@ -31,11 +31,11 @@ col1, col2 = st.columns([1, 8], vertical_alignment="center")
 with col1:
     # Display the image and adjust the width to align nicely with the text
     # Increased slightly to 130 to balance the longer title
-    st.image(logo, width=130) 
+    st.image(logo, width=200) 
 
 with col2:
     # Display the exact title from your screenshot
-    st.title("Achala Digital Vaidya: The Kitchen Pharmacy AI")
+    st.title("Achala Digital Vaidya: Kitchen Pharmacy AI")
 st.caption("A smart health advisor based on Rajiv Dixit's Ayurvedic principles for joint and back pain.")
 st.write("---")
 
