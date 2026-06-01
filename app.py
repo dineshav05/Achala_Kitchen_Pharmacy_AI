@@ -14,8 +14,11 @@ client = OpenAI(api_key=API_KEY)
 
 # 2. UI Configuration
 # 1. Load your custom logo image
-# Make sure "Achala_DV_1.png" is in the same directory as this script
-logo = Image.open("Achala_Digital_Vaidya.png")
+
+# 2. Function to securely encode your logo for the web UI
+def get_base64_image(image_path):
+    with open(image_path, "rb") as img_file:
+        return base64.b64encode(img_file.read()).decode('utf-8')
 
 # 2. Update the page configuration to use the image as the browser tab icon
 st.set_page_config(
@@ -23,6 +26,24 @@ st.set_page_config(
     page_icon=logo, 
     layout="centered"
 )
+# Make sure "Achala_DV_1.png" is in the same directory as this script
+logo = Image.open("Achala_Digital_Vaidya.png")
+
+# 3. The Responsive HTML/CSS Header
+# This Flexbox design forces the logo and text to stay perfectly centered on all screen sizes
+responsive_header = f"""
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; margin-bottom: 10px;">
+        <img src="data:image/png;base64,{logo_base64}" width="90" style="margin-bottom: 15px;">
+        <h1 style="margin: 0; padding: 0; line-height: 1.2;">Achala Digital Vaidya:<br>Kitchen Pharmacy AI</h1>
+        <p style="color: #888888; font-size: 0.95rem; margin-top: 10px; margin-bottom: 20px;">
+            A smart health advisor based on Rajiv Dixit's Ayurvedic principles for joint and back pain.
+        </p>
+    </div>
+    <hr style="margin-bottom: 30px;">
+"""
+
+# Inject the custom responsive header into the app
+st.markdown(responsive_header, unsafe_allow_html=True)
 
 # 3. Create a custom layout with vertical alignment
 # The vertical_alignment="center" perfectly aligns the image with the middle of the title
