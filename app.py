@@ -1,4 +1,5 @@
 import streamlit as st
+from PIL import Image
 from openai import OpenAI
 
 # 1. Initialize the OpenAI Client Safely
@@ -12,9 +13,28 @@ except Exception:
 client = OpenAI(api_key=API_KEY)
 
 # 2. UI Configuration
-st.set_page_config(page_title="Achala Kitchen Pharmacy AI", page_icon="🌿", layout="centered")
+# 1. Load your custom logo image
+# Make sure "Achala_DV_1.png" is in the same directory as this script
+logo = Image.open("Achala_Digital_Vaidya.png")
 
-st.title("🌿 Achala Kitchen Pharmacy AI")
+# 2. Update the page configuration to use the image as the browser tab icon
+st.set_page_config(
+    page_title="Achala Digital Vaidya: The Kitchen Pharmacy AI", 
+    page_icon=logo, 
+    layout="centered"
+)
+
+# 3. Create a custom layout to place the logo right next to the main title
+# The [1, 8] ratio keeps the image column small and the title column wide
+col1, col2 = st.columns([1, 8])
+
+with col1:
+    # Display the image and adjust the width to align nicely with the text
+    st.image(logo, width=60) 
+
+with col2:
+    # Display the clean title
+    st.title("Achala Digital Vaidya: The Kitchen Pharmacy AI")
 st.caption("A smart health advisor based on Rajiv Dixit's Ayurvedic principles for joint and back pain.")
 st.write("---")
 
