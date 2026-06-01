@@ -67,9 +67,11 @@ for message in st.session_state.messages:
 
 import base64
 
-# 1. Initialize the payment state in the background
+# 1. Initialize states for payment and QR display
 if "premium_unlocked" not in st.session_state:
     st.session_state.premium_unlocked = False
+if "show_qr" not in st.session_state:
+    st.session_state.show_qr = False
 
 st.write("### 🔍 Advanced Diagnostic Analysis")
 
@@ -77,22 +79,40 @@ st.write("### 🔍 Advanced Diagnostic Analysis")
 if not st.session_state.premium_unlocked:
     st.info("🔒 **Premium Feature:** Upload a photo of your joint or a medical report for deep visual analysis and tailored dietary matching.")
     
-    pay_col, info_col = st.columns([1, 2], vertical_alignment="center")
-    
-    with pay_col:
-        if st.button("Unlock Feature (₹49)"):
-            st.session_state.premium_unlocked = True
-            st.success("Payment Successful!")
-            st.rerun()
+    if not st.session_state.show_qr:
+        # Step A: Show the initial "Unlock" button
+        pay_col, info_col = st.columns([1, 2], vertical_alignment="center")
+        with pay_col:
+            if st.button("Unlock Feature (₹49)"):
+                st.session_state.show_qr = True
+                st.rerun()
+        with info_col:
+            st.caption("⚡ One-time fee per analysis. Pay securely via any UPI App (GPay, PhonePe, Paytm).")
             
-    with info_col:
-        st.caption("⚡ One-time fee per analysis. Pay securely via any UPI App (GPay, PhonePe, Paytm).")
+    else:
+        # Step B: Display the QR code and wait for manual confirmation
+        qr_col, text_col = st.columns([1, 1])
+        with qr_col:
+            # Display your exact QR file
+            st.image("QRCODE.jpeg", width=250)
+        with text_col:
+            st.write("### Complete Your Payment")
+            st.write("1. Open **GPay, PhonePe, or Paytm** on your phone.")
+            st.write("2. Scan the QR code or send **₹49** directly to:")
+            # Displaying the UPI ID directly from your image for easy copying
+            st.code("dinesha.vishwanatha05-2@okaxis")
+            st.write("3. Once the payment is successful on your phone, click below to unlock.")
+            
+            # Using type="primary" makes the confirmation button pop visually
+            if st.button("✅ I Have Paid (Unlock Now)", type="primary"):
+                st.session_state.premium_unlocked = True
+                st.success("Payment Confirmed! Visual Analysis Enabled.")
+                st.rerun()
 
 else:
     # 3. This section unlocks ONLY after a successful payment
     st.success("🔓 **Premium Active:** Visual Analysis Enabled")
     
-    # YOUR REPLACED CODE LIVES HERE SAFELY NOW:
     uploaded_file = st.file_uploader("Upload a photo of your joint or a medical report (PNG, JPG)", type=["png", "jpg", "jpeg"])
     
     def encode_image(upload):
