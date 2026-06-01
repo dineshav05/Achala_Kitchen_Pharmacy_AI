@@ -20,6 +20,9 @@ client = OpenAI(api_key=API_KEY)
 def get_base64_image(image_path):
     with open(image_path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode('utf-8')
+        
+# Make sure "Achala_Digital_Vaidya.png" is in the same directory as this script
+logo = Image.open("Achala_Digital_Vaidya.png")
 
 # 2. Update the page configuration to use the image as the browser tab icon
 st.set_page_config(
@@ -27,8 +30,6 @@ st.set_page_config(
     page_icon=logo, 
     layout="centered"
 )
-# Make sure "Achala_Digital_Vaidya.png" is in the same directory as this script
-logo = Image.open("Achala_Digital_Vaidya.png")
 
 # 3. The Responsive HTML/CSS Header
 # This Flexbox design forces the logo and text to stay perfectly centered on all screen sizes
