@@ -73,12 +73,14 @@ if "premium_unlocked" not in st.session_state:
 if "show_qr" not in st.session_state:
     st.session_state.show_qr = False
 
+# --- THE FIX: Initialize the variable as empty for free users ---
+uploaded_file = None
+
 st.write("### 🔍 Advanced Diagnostic Analysis")
 
 # 2. Check if the user has paid
 if not st.session_state.premium_unlocked:
     st.info("🔒 **Premium Feature:** Upload a photo of your joint or a medical report for deep visual analysis and tailored dietary matching.")
-    
     if not st.session_state.show_qr:
         pay_col, info_col = st.columns([1, 2], vertical_alignment="center")
         with pay_col:
