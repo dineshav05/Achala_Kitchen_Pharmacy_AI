@@ -2,6 +2,7 @@ import streamlit as st
 from PIL import Image
 from openai import OpenAI
 import base64
+import hashlib
 
 # 1. Initialize the OpenAI Client Safely
 # This tells the code to look for the key in Streamlit's secure dashboard, NOT in the code.
@@ -78,6 +79,10 @@ for message in st.session_state.messages:
 
 import base64
 
+# 1. Initialize a memory bank for processed files
+if "processed_files" not in st.session_state:
+    st.session_state.processed_files = []
+
 # 1. Initialize states for payment tracking
 if "premium_unlocked" not in st.session_state:
     st.session_state.premium_unlocked = False
@@ -140,10 +145,27 @@ if not st.session_state.premium_unlocked:
                         st.error("❌ Invalid Transaction ID. Please enter the full 12-digit numerical UTR found in your UPI app receipt.")
 
 else:
-    # 3. This section unlocks ONLY after a valid 12-digit format is provided
+    # This section unlocks ONLY after a successful payment
     st.success("🔓 **Premium Active:** Visual Analysis Enabled")
     
+    # 2. The File Uploader
     uploaded_file = st.file_uploader("Upload a photo of your joint or a medical report (PNG, JPG)", type=["png", "jpg", "jpeg"])
+    
+    if uploaded_file is not None:
+        # 3. Generate a unique digital fingerprint of the image content
+        file_bytes = uploaded_file.getvalue()
+        file_hash = hashlib.md5(file_bytes).hexdigest()
+        
+        # 4. Check if we have seen this fingerprint before
+        if file_hash in st.session_state.processed_files:
+            # Show the exact warning you requested
+            st.warning("⚠️ Kindly upload a report or image only once. This is a duplicate.")
+            # Nullify the file so it doesn't get sent to the AI again
+            uploaded_file = None 
+        else:
+            # If it is a brand new image, remember its fingerprint for the future
+            st.session_state.processed_files.append(file_hash)
+            st.success("✅ Image verified as new. Ready for analysis!")
     
     def encode_image(upload):
         import base64
