@@ -1,6 +1,7 @@
 import streamlit as st
 from PIL import Image
 from openai import OpenAI
+import base64
 
 # 1. Initialize the OpenAI Client Safely
 # This tells the code to look for the key in Streamlit's secure dashboard, NOT in the code.
@@ -26,7 +27,7 @@ st.set_page_config(
     page_icon=logo, 
     layout="centered"
 )
-# Make sure "Achala_DV_1.png" is in the same directory as this script
+# Make sure "Achala_Digital_Vaidya.png" is in the same directory as this script
 logo = Image.open("Achala_Digital_Vaidya.png")
 
 # 3. The Responsive HTML/CSS Header
