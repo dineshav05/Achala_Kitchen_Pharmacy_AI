@@ -67,7 +67,7 @@ for message in st.session_state.messages:
 
 import base64
 
-# 1. Initialize states for payment and QR display
+# 1. Initialize states for payment tracking
 if "premium_unlocked" not in st.session_state:
     st.session_state.premium_unlocked = False
 if "show_qr" not in st.session_state:
@@ -80,7 +80,6 @@ if not st.session_state.premium_unlocked:
     st.info("🔒 **Premium Feature:** Upload a photo of your joint or a medical report for deep visual analysis and tailored dietary matching.")
     
     if not st.session_state.show_qr:
-        # Step A: Show the initial "Unlock" button
         pay_col, info_col = st.columns([1, 2], vertical_alignment="center")
         with pay_col:
             if st.button("Unlock Feature (₹49)"):
@@ -90,27 +89,45 @@ if not st.session_state.premium_unlocked:
             st.caption("⚡ One-time fee per analysis. Pay securely via any UPI App (GPay, PhonePe, Paytm).")
             
     else:
-        # Step B: Display the QR code and wait for manual confirmation
         qr_col, text_col = st.columns([1, 1])
         with qr_col:
-            # Display your exact QR file
             st.image("QRCODE.jpeg", width=250)
         with text_col:
             st.write("### Complete Your Payment")
             st.write("1. Open **GPay, PhonePe, or Paytm** on your phone.")
             st.write("2. Scan the QR code or send **₹49** directly to:")
-            # Displaying the UPI ID directly from your image for easy copying
             st.code("dinesha.vishwanatha05-2@okaxis")
-            st.write("3. Once the payment is successful on your phone, click below to unlock.")
             
-            # Using type="primary" makes the confirmation button pop visually
-            if st.button("✅ I Have Paid (Unlock Now)", type="primary"):
-                st.session_state.premium_unlocked = True
-                st.success("Payment Confirmed! Visual Analysis Enabled.")
-                st.rerun()
+            st.write("---")
+            st.write("### 🔐 Verify Transaction")
+            
+            # Form forces the input before execution
+            with st.form("payment_verification_form"):
+                utr_input = st.text_input(
+                    "Enter 12-Digit UPI Ref No. / UTR ID:", 
+                    placeholder="e.g., 3145XXXXXXXX",
+                    max_chars=12
+                )
+                submit_verification = st.form_submit_button("Submit & Unlock Dashboard")
+                
+                if submit_verification:
+                    # Clean up the input text
+                    clean_utr = utr_input.strip()
+                    
+                    # Basic Validation: Ensure it is a 12-digit number common to Indian UPI systems
+                    if len(clean_utr) == 12 and clean_utr.isdigit():
+                        st.session_state.premium_unlocked = True
+                        
+                        # In your logs dashboard, you will see who submitted what key
+                        # Perfect for checking your bank statement later
+                        st.toast(f"UTR Submitted for verification: {clean_utr}") 
+                        st.success("UTR Recorded! Opening Dashboard...")
+                        st.rerun()
+                    else:
+                        st.error("❌ Invalid Transaction ID. Please enter the full 12-digit numerical UTR found in your UPI app receipt.")
 
 else:
-    # 3. This section unlocks ONLY after a successful payment
+    # 3. This section unlocks ONLY after a valid 12-digit format is provided
     st.success("🔓 **Premium Active:** Visual Analysis Enabled")
     
     uploaded_file = st.file_uploader("Upload a photo of your joint or a medical report (PNG, JPG)", type=["png", "jpg", "jpeg"])
