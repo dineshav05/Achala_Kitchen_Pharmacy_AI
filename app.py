@@ -30,8 +30,8 @@ col1, col2 = st.columns([1, 8], vertical_alignment="center")
 
 with col1:
     # Display the image and adjust the width to align nicely with the text
-    # Increased slightly to 70 to balance the longer title
-    st.image(logo, width=70) 
+    # Increased slightly to 90 to balance the longer title
+    st.image(logo, width=90) 
 
 with col2:
     # Display the exact title from your screenshot
