@@ -13,14 +13,9 @@ except Exception:
 
 client = OpenAI(api_key=API_KEY)
 
-# 2. UI Configuration
-# 1. Load your custom logo image
+# --- 2. UI Configuration ---
 
-# 2. Function to securely encode your logo for the web UI
-def get_base64_image(image_path):
-    with open(image_path, "rb") as img_file:
-        return base64.b64encode(img_file.read()).decode('utf-8')
-        
+# 1. Load your custom logo image FIRST
 # Make sure "Achala_Digital_Vaidya.png" is in the same directory as this script
 logo = Image.open("Achala_Digital_Vaidya.png")
 
@@ -31,7 +26,15 @@ st.set_page_config(
     layout="centered"
 )
 
-# 3. The Responsive HTML/CSS Header
+# 3. Function to securely encode your logo for the web UI
+def get_base64_image(image_path):
+    with open(image_path, "rb") as img_file:
+        return base64.b64encode(img_file.read()).decode('utf-8')
+
+# 4. Create the base64 string (THIS IS THE LINE THAT WAS MISSING!)
+logo_base64 = get_base64_image("Achala_Digital_Vaidya.png")
+
+# 5. The Responsive HTML/CSS Header
 # This Flexbox design forces the logo and text to stay perfectly centered on all screen sizes
 responsive_header = f"""
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; margin-bottom: 10px;">
