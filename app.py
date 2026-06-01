@@ -65,20 +65,42 @@ for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
+import base64
+
+# 1. Add the file uploader to the UI
+uploaded_file = st.file_uploader("Upload a photo of your joint or a medical report (Optional)", type=["png", "jpg", "jpeg"])
+
+# 2. Function to encode the image for the AI Engine
+def encode_image(upload):
+    return base64.b64encode(upload.getvalue()).decode('utf-8')
+
+
 # 6. Handle User Input
-if user_input := st.chat_input("Describe your pain or symptoms (e.g., severe knee pain, morning stiffness)..."):
+if user_input := st.chat_input("Describe your pain or upload an image above..."):
     
-    # Display user's message in the UI
+    # Display user message and uploaded image
     with st.chat_message("user"):
         st.markdown(user_input)
+        if uploaded_file:
+            st.image(uploaded_file, width=250)
+
+    # Prepare the message content for the AI
+    message_content = [{"type": "text", "text": user_input}]
     
+    # If a file is uploaded, attach it to the payload
+    if uploaded_file is not None:
+        base64_image = encode_image(uploaded_file)
+        message_content.append({
+            "type": "image_url",
+            "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}
+        })
+
     # Save user's message to history
-    st.session_state.messages.append({"role": "user", "content": user_input})
-    
+    st.session_state.messages.append({"role": "user", "content": message_content})
+
     # Generate Assistant Response
     with st.chat_message("assistant"):
         try:
-            # We use gpt-4o-mini as it is fast, highly accurate, and incredibly affordable
             response = client.chat.completions.create(
                 model="gpt-4o-mini",
                 messages=st.session_state.messages,
@@ -92,4 +114,3 @@ if user_input := st.chat_input("Describe your pain or symptoms (e.g., severe kne
             
         except Exception as e:
             st.error("Error communicating with the AI Engine.")
-            st.info("Please make sure your API key is correctly initialized.")
