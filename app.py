@@ -203,13 +203,6 @@ def display_letterhead_report(ai_content, logo_base64_string):
     # Inject it into the Streamlit UI
     st.markdown(letterhead_html, unsafe_allow_html=True)
 
-# Safely fetch the logo fresh exactly when we need it for the letterhead
-# Note: Ensure the filename exactly matches the image in your folder (e.g., "Achala_Digital_Vaidya.png" if you didn't rename it)
-fresh_logo_base64 = get_base64_image("Achala_Digital_Vaidya.png") 
-
-# Generate the beautiful letterhead report
-display_letterhead_report(ai_response, fresh_logo_base64)
-
 # 6. Handle User Input
 # --- The Chat Input and AI Execution Block ---
 if user_input := st.chat_input("Describe your pain or upload an image above..."):
