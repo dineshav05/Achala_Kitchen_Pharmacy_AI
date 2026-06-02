@@ -230,7 +230,7 @@ if user_input := st.chat_input("Describe your pain or upload an image above...")
 
     # 3. Generate Assistant Response
     with st.chat_message("assistant"):
-        try:
+        try: # <-- THE OUTER TRY (For the AI API)
             # Call the AI Engine
             response = client.chat.completions.create(
                 model="gpt-4o-mini",
@@ -246,7 +246,6 @@ if user_input := st.chat_input("Describe your pain or upload an image above...")
                 display_letterhead_report(ai_response, fresh_logo_base64)
                 
                 # 2. Build a printable HTML version for the PDF
-                # We format this perfectly for an A4 page
                 pdf_html = f"""
                 <html>
                 <head><meta charset="utf-8"></head>
@@ -269,9 +268,8 @@ if user_input := st.chat_input("Describe your pain or upload an image above...")
                 </html>
                 """
                 
-                # 3. Convert HTML to PDF bytes and create the Download Button
-                try:
-                    # 'False' tells pdfkit to return the raw PDF bytes instead of saving a file
+                # 3. Convert HTML to PDF bytes
+                try: # <-- THE INNER TRY (For the PDF Generator)
                     pdf_bytes = pdfkit.from_string(pdf_html, False)
                     
                     st.download_button(
@@ -279,12 +277,17 @@ if user_input := st.chat_input("Describe your pain or upload an image above...")
                         data=pdf_bytes,
                         file_name="Achala_Digital_Vaidya_Report.pdf",
                         mime="application/pdf",
-                        type="primary" # Makes the button visually stand out
+                        type="primary"
                     )
-                except Exception as e:
-                    # Safety catch in case the cloud server is still installing the PDF tools
+                except Exception as e: # <-- THE INNER EXCEPT
                     st.warning("PDF Generator is currently initializing. Please try again in a moment.")
                     
             else:
                 # If it is a normal text chat, render normal chat text
                 st.markdown(ai_response)
+            
+            # Save assistant's reply to history
+            st.session_state.messages.append({"role": "assistant", "content": ai_response})
+            
+        except Exception as e: # <-- THE MISSING OUTER EXCEPT IS RESTORED HERE!
+            st.error("Error communicating with the AI Engine. Please check your API key.")
