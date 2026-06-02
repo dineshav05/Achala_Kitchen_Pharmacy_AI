@@ -101,9 +101,9 @@ if "processed_files" not in st.session_state:
 
 # 1. Initialize states for payment tracking
 if "premium_unlocked" not in st.session_state:
-    st.session_state.premium_unlocked = True #False for validate
+    st.session_state.premium_unlocked = False #True for no validate
 if "show_qr" not in st.session_state:
-    st.session_state.show_qr = True #False for validate
+    st.session_state.show_qr = False #True for no validate
 
 # --- THE FIX: Initialize the variable as empty for free users ---
 uploaded_file = None
