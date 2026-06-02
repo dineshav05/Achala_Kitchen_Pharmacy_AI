@@ -3,7 +3,8 @@ from PIL import Image
 from openai import OpenAI
 import base64
 import hashlib
-import pdfkit
+from xhtml2pdf import pisa
+import io
 
 # 1. Initialize the OpenAI Client Safely
 # This tells the code to look for the key in Streamlit's secure dashboard, NOT in the code.
@@ -268,26 +269,25 @@ if user_input := st.chat_input("Describe your pain or upload an image above...")
                 </html>
                 """
                 
-                # 3. Convert HTML to PDF bytes
-                try: # <-- THE INNER TRY (For the PDF Generator)
-                    pdf_bytes = pdfkit.from_string(pdf_html, False)
+                # 3. Convert HTML to PDF bytes using xhtml2pdf (100% Python)
+                try: 
+                    # Create an empty memory buffer to hold the PDF
+                    pdf_buffer = io.BytesIO()
                     
-                    st.download_button(
-                        label="📥 Download Report as PDF",
-                        data=pdf_bytes,
-                        file_name="Achala_Digital_Vaidya_Report.pdf",
-                        mime="application/pdf",
-                        type="primary"
-                    )
-                except Exception as e: # <-- THE INNER EXCEPT
-                    st.warning("PDF Generator is currently initializing. Please try again in a moment.")
+                    # Convert the HTML string into a PDF and save it to the buffer
+                    pisa_status = pisa.CreatePDF(pdf_html, dest=pdf_buffer)
                     
-            else:
-                # If it is a normal text chat, render normal chat text
-                st.markdown(ai_response)
-            
-            # Save assistant's reply to history
-            st.session_state.messages.append({"role": "assistant", "content": ai_response})
-            
-        except Exception as e: # <-- THE MISSING OUTER EXCEPT IS RESTORED HERE!
-            st.error("Error communicating with the AI Engine. Please check your API key.")
+                    # If there are no errors during conversion, display the download button
+                    if not pisa_status.err:
+                        st.download_button(
+                            label="📥 Download Report as PDF",
+                            data=pdf_buffer.getvalue(),
+                            file_name="Achala_Digital_Vaidya_Report.pdf",
+                            mime="application/pdf",
+                            type="primary"
+                        )
+                    else:
+                        st.warning("⚠️ Could not compile the PDF layout. Please try again.")
+                        
+                except Exception as e:
+                    st.error(f"PDF Generator encountered an error: {e}")
