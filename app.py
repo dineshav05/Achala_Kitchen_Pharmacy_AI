@@ -238,14 +238,13 @@ if user_input := st.chat_input("Describe your pain or upload an image above...")
             )
             ai_response = response.choices[0].message.content
             
-           # --- THE CONDITIONAL RENDERING BLOCK ---
+            # --- THE CONDITIONAL RENDERING BLOCK ---
             if uploaded_file is not None:
                 # 1. Display the premium letterhead in the UI
                 fresh_logo_base64 = get_base64_image("Achala_Digital_Vaidya.png")
                 display_letterhead_report(ai_response, fresh_logo_base64)
                 
-                # 2. Build the printable HTML version
-                # The base64 logo is embedded directly, making this file work perfectly offline!
+                # 2. Build the printable HTML version (No libraries needed!)
                 report_html = f"""
                 <html>
                 <head><meta charset="utf-8"></head>
@@ -273,7 +272,7 @@ if user_input := st.chat_input("Describe your pain or upload an image above...")
                 </html>
                 """
                 
-                # 3. Native Download Button (No libraries needed!)
+                # 3. Native Download Button 
                 st.download_button(
                     label="📥 Download Medical Report",
                     data=report_html,
@@ -285,3 +284,9 @@ if user_input := st.chat_input("Describe your pain or upload an image above...")
             else:
                 # If it is a normal text chat, render normal chat text
                 st.markdown(ai_response)
+            
+            # Save assistant's reply to history
+            st.session_state.messages.append({"role": "assistant", "content": ai_response})
+            
+        except Exception as e: # --- THIS IS THE RESTORED EXCEPT BLOCK! ---
+            st.error("Error communicating with the AI Engine. Please check your API key.")
