@@ -74,6 +74,11 @@ if "messages" not in st.session_state:
 
 # --- Render Chat History ---
 for message in st.session_state.messages:
+    
+    # 🚨 THE FIX: Skip drawing the system prompt on the screen!
+    if message["role"] == "system":
+        continue
+
     with st.chat_message(message["role"]):
         
         # 1. If it's a normal string (like the AI's response or a normal text chat)
