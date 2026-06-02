@@ -175,11 +175,7 @@ else:
             st.warning("⚠️ Kindly upload a report or image only once. This is a duplicate.")
         else:
             st.success("✅ Image loaded successfully! Please type your symptoms in the chat box below and hit Send to begin.")
-    
-    # 3. Simple Success Message (No more old duplicate-blocking logic here)
-    if uploaded_file is not None:
-        st.success("✅ Image loaded successfully! Please type your symptoms in the chat box below and hit Send to begin the analysis.")
-    
+            
     def encode_image(upload):
         import base64
         return base64.b64encode(upload.getvalue()).decode('utf-8')
