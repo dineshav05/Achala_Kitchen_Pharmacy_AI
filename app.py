@@ -165,7 +165,8 @@ else:
         else:
             # If it is a brand new image, remember its fingerprint for the future
             st.session_state.processed_files.append(file_hash)
-            st.success("✅ Image verified as new. Ready for analysis!")
+            #st.success("✅ Image verified as new. Ready for analysis!")
+            st.success("✅ Image verified! Please type a message in the chat box below (e.g., 'Analyze this report') and hit Send to begin.")
     
     def encode_image(upload):
         import base64
