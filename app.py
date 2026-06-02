@@ -148,25 +148,12 @@ else:
     # This section unlocks ONLY after a successful payment
     st.success("🔓 **Premium Active:** Visual Analysis Enabled")
     
-    # 2. The File Uploader
+    # 2. The File Uploader (CLEAN VERSION)
     uploaded_file = st.file_uploader("Upload a photo of your joint or a medical report (PNG, JPG)", type=["png", "jpg", "jpeg"])
     
+    # 3. Simple Success Message (No more old duplicate-blocking logic here)
     if uploaded_file is not None:
-        # 3. Generate a unique digital fingerprint of the image content
-        file_bytes = uploaded_file.getvalue()
-        file_hash = hashlib.md5(file_bytes).hexdigest()
-        
-        # 4. Check if we have seen this fingerprint before
-        if file_hash in st.session_state.processed_files:
-            # Show the exact warning you requested
-            st.warning("⚠️ Kindly upload a report or image only once. This is a duplicate.")
-            # Nullify the file so it doesn't get sent to the AI again
-            uploaded_file = None 
-        else:
-            # If it is a brand new image, remember its fingerprint for the future
-            st.session_state.processed_files.append(file_hash)
-            #st.success("✅ Image verified as new. Ready for analysis!")
-            st.success("✅ Image verified! Please type a message in the chat box below (e.g., 'Analyze this report') and hit Send to begin.")
+        st.success("✅ Image loaded successfully! Please type your symptoms in the chat box below and hit Send to begin the analysis.")
     
     def encode_image(upload):
         import base64
