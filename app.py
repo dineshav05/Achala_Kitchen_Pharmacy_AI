@@ -240,8 +240,7 @@ if user_input := st.chat_input("Describe your pain or upload an image above...")
                 
                 # 2. Build the printable HTML version
                 # First, translate the AI's Markdown into beautifully structured HTML
-                structured_html_content = markdown.markdown(ai_response)
-                
+                structured_html_content = markdown.markdown(ai_response, extensions=['extra', 'sane_lists', 'nl2br'])
                 # Now, inject it into a professionally styled medical template
                 report_html = f"""
                 <html>
