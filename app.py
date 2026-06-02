@@ -218,7 +218,6 @@ if user_input := st.chat_input("Describe your pain or upload an image above...")
     # 2. Prepare the message content for the AI
     message_content = [{"type": "text", "text": user_input}]
     
-    # If a file is uploaded, attach it to the payload
     if uploaded_file is not None:
         base64_image = encode_image(uploaded_file)
         message_content.append({
@@ -231,7 +230,8 @@ if user_input := st.chat_input("Describe your pain or upload an image above...")
 
     # 3. Generate Assistant Response
     with st.chat_message("assistant"):
-        try: # <-- THE OUTER TRY (For the AI API)
+        try: # --- OUTER TRY BLOCK BEGINS ---
+            
             # Call the AI Engine
             response = client.chat.completions.create(
                 model="gpt-4o-mini",
@@ -242,7 +242,7 @@ if user_input := st.chat_input("Describe your pain or upload an image above...")
             
             # --- THE CONDITIONAL RENDERING BLOCK ---
             if uploaded_file is not None:
-                # 1. Display the premium Achala Enterprises letterhead in the UI
+                # 1. Display the premium letterhead in the UI
                 fresh_logo_base64 = get_base64_image("Achala_Digital_Vaidya.png")
                 display_letterhead_report(ai_response, fresh_logo_base64)
                 
@@ -269,15 +269,11 @@ if user_input := st.chat_input("Describe your pain or upload an image above...")
                 </html>
                 """
                 
-                # 3. Convert HTML to PDF bytes using xhtml2pdf (100% Python)
-                try: 
-                    # Create an empty memory buffer to hold the PDF
+                # 3. Convert HTML to PDF bytes using xhtml2pdf
+                try: # --- INNER TRY BLOCK BEGINS ---
                     pdf_buffer = io.BytesIO()
-                    
-                    # Convert the HTML string into a PDF and save it to the buffer
                     pisa_status = pisa.CreatePDF(pdf_html, dest=pdf_buffer)
                     
-                    # If there are no errors during conversion, display the download button
                     if not pisa_status.err:
                         st.download_button(
                             label="📥 Download Report as PDF",
@@ -289,5 +285,15 @@ if user_input := st.chat_input("Describe your pain or upload an image above...")
                     else:
                         st.warning("⚠️ Could not compile the PDF layout. Please try again.")
                         
-                except Exception as e:
+                except Exception as e: # --- INNER EXCEPT BLOCK ---
                     st.error(f"PDF Generator encountered an error: {e}")
+                    
+            else:
+                # If it is a normal text chat, render normal chat text
+                st.markdown(ai_response)
+            
+            # Save assistant's reply to history
+            st.session_state.messages.append({"role": "assistant", "content": ai_response})
+            
+        except Exception as e: # --- OUTER EXCEPT BLOCK ---
+            st.error("Error communicating with the AI Engine. Please check your API key.")
