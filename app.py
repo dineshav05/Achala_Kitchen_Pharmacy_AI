@@ -71,13 +71,23 @@ if "messages" not in st.session_state:
         {"role": "system", "content": SYSTEM_PROMPT}
     ]
 
-# 5. Display Past Messages (Skipping the hidden system prompt)
+# --- Render Chat History ---
 for message in st.session_state.messages:
-    if message["role"] != "system":
-        with st.chat_message(message["role"]):
+    with st.chat_message(message["role"]):
+        
+        # 1. If it's a normal string (like the AI's response or a normal text chat)
+        if isinstance(message["content"], str):
             st.markdown(message["content"])
-
-import base64
+            
+        # 2. If it is a complex payload list (like when the user uploads an image)
+        elif isinstance(message["content"], list):
+            for item in message["content"]:
+                # Only print the text portion of the payload to the screen
+                if item["type"] == "text":
+                    st.markdown(item["text"])
+                # We hide the massive base64 image string and just show a neat little tag
+                elif item["type"] == "image_url":
+                    st.caption("📎 *Image/Report Attached*")
 
 # 1. Initialize a memory bank for processed files
 if "processed_files" not in st.session_state:
