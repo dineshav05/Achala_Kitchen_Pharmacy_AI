@@ -159,8 +159,22 @@ else:
     # This section unlocks ONLY after a successful payment
     st.success("🔓 **Premium Active:** Visual Analysis Enabled")
     
-    # 2. The File Uploader (CLEAN VERSION)
+   # 2. The File Uploader
     uploaded_file = st.file_uploader("Upload a photo of your joint or a medical report (PNG, JPG)", type=["png", "jpg", "jpeg"])
+    
+    if uploaded_file is not None:
+        import hashlib
+        file_hash = hashlib.md5(uploaded_file.getvalue()).hexdigest()
+        
+        # Initialize memory for analyzed files if it doesn't exist
+        if "analyzed_files" not in st.session_state:
+            st.session_state.analyzed_files = []
+            
+        # Check if this exact file has already been processed by the AI
+        if file_hash in st.session_state.analyzed_files:
+            st.warning("⚠️ Kindly upload a report or image only once. This is a duplicate.")
+        else:
+            st.success("✅ Image loaded successfully! Please type your symptoms in the chat box below and hit Send to begin.")
     
     # 3. Simple Success Message (No more old duplicate-blocking logic here)
     if uploaded_file is not None:
@@ -211,11 +225,18 @@ if user_input := st.chat_input("Describe your pain or upload an image above...")
     message_content = [{"type": "text", "text": user_input}]
     
     if uploaded_file is not None:
-        base64_image = encode_image(uploaded_file)
-        message_content.append({
-            "type": "image_url",
-            "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}
-        })
+        import hashlib
+        current_hash = hashlib.md5(uploaded_file.getvalue()).hexdigest()
+        
+        # SMART CACHE: Only attach the image to the AI payload if it's brand new
+        if current_hash not in st.session_state.analyzed_files:
+            base64_image = encode_image(uploaded_file)
+            message_content.append({
+                "type": "image_url",
+                "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}
+            })
+            # Add to our memory bank so it triggers the duplicate warning next time
+            st.session_state.analyzed_files.append(current_hash)
 
     # Save user's message to history
     st.session_state.messages.append({"role": "user", "content": message_content})
