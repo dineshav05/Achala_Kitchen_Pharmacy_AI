@@ -211,15 +211,16 @@ fresh_logo_base64 = get_base64_image("Achala_Digital_Vaidya.png")
 display_letterhead_report(ai_response, fresh_logo_base64)
 
 # 6. Handle User Input
+# --- The Chat Input and AI Execution Block ---
 if user_input := st.chat_input("Describe your pain or upload an image above..."):
     
-    # Display user message and uploaded image
+    # 1. Display user message and uploaded image
     with st.chat_message("user"):
         st.markdown(user_input)
         if uploaded_file:
             st.image(uploaded_file, width=250)
 
-    # Prepare the message content for the AI
+    # 2. Prepare the message content for the AI
     message_content = [{"type": "text", "text": user_input}]
     
     # If a file is uploaded, attach it to the payload
@@ -233,19 +234,28 @@ if user_input := st.chat_input("Describe your pain or upload an image above...")
     # Save user's message to history
     st.session_state.messages.append({"role": "user", "content": message_content})
 
-    # Generate Assistant Response
+    # 3. Generate Assistant Response
     with st.chat_message("assistant"):
         try:
+            # Call the AI Engine
             response = client.chat.completions.create(
                 model="gpt-4o-mini",
                 messages=st.session_state.messages,
                 temperature=0.6,
             )
             ai_response = response.choices[0].message.content
-            st.markdown(ai_response)
+            
+            # --- THE FIX: Conditional Rendering ---
+            if uploaded_file is not None:
+                # If an image was uploaded, render the premium Achala Enterprises letterhead
+                fresh_logo_base64 = get_base64_image("Achala_Digital_Vaidya.png")
+                display_letterhead_report(ai_response, fresh_logo_base64)
+            else:
+                # If it is a normal text chat, render normal chat text
+                st.markdown(ai_response)
             
             # Save assistant's reply to history
             st.session_state.messages.append({"role": "assistant", "content": ai_response})
             
         except Exception as e:
-            st.error("Error communicating with the AI Engine.")
+            st.error("Error communicating with the AI Engine. Please check your API key.")
