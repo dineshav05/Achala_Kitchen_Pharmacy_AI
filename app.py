@@ -52,6 +52,15 @@ responsive_header = f"""
 # Inject the custom responsive header into the app
 st.markdown(responsive_header, unsafe_allow_html=True)
 
+# --- Sidebar Settings ---
+with st.sidebar:
+    st.title("⚙️ Preferences")
+    selected_language = st.selectbox(
+        "🌐 Choose Report Language:",
+        ["English", "Hindi (हिंदी)", "Kannada (ಕನ್ನಡ)", "Tamil (தமிழ்)", "Telugu (తెలుగు)", "Marathi (मराठी)", "Gujarati (ગુજરાતી)", "Bengali (বাংলা)"]
+    )
+    st.info(f"The Digital Vaidya will automatically analyze your reports and reply in **{selected_language}**.")
+
 # 3. The Core Knowledge System Prompt
 SYSTEM_PROMPT = """You are Rajiv Dixit AI, an expert consultant in Ayurveda and Vata-induced joint pain. Your goal is to help the common man reverse chronic back and joint pain using accessible, budget-friendly kitchen remedies.
 
@@ -246,10 +255,20 @@ if user_input := st.chat_input("Describe your pain or upload an image above...")
     with st.chat_message("assistant"):
         try: # --- OUTER TRY BLOCK BEGINS ---
             
-            # Call the AI Engine
+            # --- SMART TRANSLATION PAYLOAD ---
+            # Create a temporary copy of the chat history
+            api_messages = st.session_state.messages.copy()
+            
+            # Inject a strict system command telling the AI to use the user's selected language
+            api_messages.append({
+                "role": "system", 
+                "content": f"CRITICAL TRANSLATION RULE: You MUST generate your ENTIRE response, including the report analysis, headings, and Ayurvedic recommendations, strictly in {selected_language}. Ensure medical terms are translated beautifully so the common man can understand."
+            })
+            
+            # Call the AI Engine using the modified payload
             response = client.chat.completions.create(
                 model="gpt-4o-mini",
-                messages=st.session_state.messages,
+                messages=api_messages,
                 temperature=0.6,
             )
             ai_response = response.choices[0].message.content
