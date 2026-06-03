@@ -32,7 +32,7 @@ with st.sidebar:
         "🌐 Choose Report Language:",
         ["English", "Hindi (हिंदी)", "Kannada (ಕನ್ನಡ)", "Tamil (தமிழ்)", "Telugu (తెలుగు)", "Marathi (मराठी)", "Gujarati (ગુજરાતી)", "Bengali (বাংলা)"]
     )
-    st.info(f"The Digital Vaidya will automatically analyze your reports and reply in **{selected_language}**.")
+    st.info(f"The Digital Vaidya & Clinical Translator will automatically analyze your reports and reply in **{selected_language}**.")
 
 
 # --- CLINIC ADMINISTRATOR SETTINGS ---
