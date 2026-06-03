@@ -127,7 +127,17 @@ if "show_qr" not in st.session_state:
 # --- THE FIX: Initialize the variable as empty for free users ---
 uploaded_file = None
 
-st.write("### 🔍 Advanced Diagnostic Analysis")
+st.markdown(
+    """
+    <div style="display: flex; align-items: center; white-space: nowrap; margin-bottom: 1rem;">
+        <span style="font-size: 1.4rem; margin-right: 8px;">🔍</span>
+        <h3 style="margin: 0; font-size: clamp(1.1rem, 4.5vw, 1.5rem); letter-spacing: -0.5px;">
+            Advanced Diagnostic Analysis
+        </h3>
+    </div>
+    """, 
+    unsafe_allow_html=True
+)
 
 # 2. Check if the user has paid
 if not st.session_state.premium_unlocked:
