@@ -41,11 +41,15 @@ logo_base64 = get_base64_image("Achala_Digital_Vaidya.png")
 responsive_header = f"""
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; margin-bottom: 10px;">
         <img src="data:image/png;base64,{logo_base64}" width="90" style="margin-bottom: 15px;">
-         <div class="p-4 bg-white border-b border-gray-100">
-          <h1 class="text-lg font-semibold text-gray-950 tracking-tight">Achala Digital Vaidya</h1>
-          <p class="text-[11px] font-normal text-amber-700 uppercase tracking-widest mt-1">
-            Kitchen Pharmacy <span class="font-bold text-gray-900"> AI</span>
-          </p>
+         <div class="flex items-center justify-between p-4 bg-white shadow-sm">
+          <h1 class="text-base font-bold text-slate-900">
+            Achala Digital <span class="font-light text-slate-500">Vaidya</span>
+          </h1>
+          <div class="px-2.5 py-1 bg-amber-50 rounded-full border border-amber-200/60">
+            <p class="text-xs font-medium text-amber-800">
+              🍳 Kitchen Pharmacy <span class="text-[10px] bg-amber-700 text-white px-1 py-0.2 rounded ml-0.5">AI</span>
+            </p>
+          </div>
         </div>
         <p style="color: #888888; font-size: 0.95rem; margin-top: 10px; margin-bottom: 20px;">
             "Decode your diagnosis. Heal with heritage. An empowering Ayurvedic guide to joint and back pain, inspired by Shri Rajiv Dixit Ji."
