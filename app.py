@@ -28,39 +28,54 @@ st.set_page_config(
     layout="centered"
 )
 
-# 3. Function to securely encode your logo for the web UI
+# --- 3. Base64 Image Encoder ---
 def get_base64_image(image_path):
+    import base64
     with open(image_path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode('utf-8')
 
-# 4. Create the base64 string (THIS IS THE LINE THAT WAS MISSING!)
+# --- 4. Encode Both Logos ---
 logo_base64 = get_base64_image("Achala_Digital_Vaidya.png")
+allopathic_logo_base64 = get_base64_image("Allopatic_Clinic.png")
 
-# 5. The Responsive HTML/CSS Header
-# This Flexbox design forces the logo and text to stay perfectly centered on all screen sizes
-responsive_header = f"""
-    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; margin-bottom: 10px;">
-        <img src="data:image/png;base64,{logo_base64}" width="90" style="margin-bottom: 15px;">
-         <div class="flex items-center justify-between p-4 bg-white shadow-sm">
-          <h1 class="text-base font-bold text-slate-900">
-            Achala Digital <span class="font-light text-slate-500">Vaidya</span>
-          </h1>
-          <div class="px-2.5 py-1 bg-amber-50 rounded-full border border-amber-200/60">
-            <p class="text-xs font-medium text-amber-800">
-              🍳 Kitchen Pharmacy <span class="text-[10px] bg-amber-700 text-white px-1 py-0.2 rounded ml-0.5">AI</span>
-            </p>
-          </div>
-        </div>
-        <p style="color: #888888; font-size: 0.95rem; margin-top: 10px; margin-bottom: 20px;">
-            "Decode your diagnosis. Heal with heritage. An empowering Ayurvedic guide to joint and back pain, inspired by Shri Rajiv Dixit Ji."
-        </p>
+# 1. Define UI Variables Based on Clinic Setup
+if clinic_mode == "Ayurvedic (Achala Digital Vaidya)":
+    current_logo = logo_base64  # Your existing green leaf tech logo
+    brand_title = "Achala Digital Vaidya"
+    brand_badge = "Kitchen Pharmacy AI"
+    brand_caption = '"Decode your diagnosis. Heal with heritage. An empowering Ayurvedic guide to joint and back pain, inspired by Shri Rajiv Dixit Ji."'
+    
+    # SYSTEM_PROMPT = """ (Your Ayurvedic Prompt Here) """
+
+else:
+    current_logo = allopathic_logo_base64  # We will define this once you generate the new logo!
+    brand_title = "Patient Education & Clinical Translator"
+    brand_badge = "Evidence-Based AI"
+    brand_caption = '"Empowering patients through clear, evidence-based medical translations and clinical clarity."'
+    
+    # SYSTEM_PROMPT = """ (Your Allopathic Prompt Here) """
+
+# 2. Inject the variables into a SINGLE dynamic HTML header
+dynamic_header_html = f"""
+<div style="display: flex; flex-direction: column; align-items: center; text-align: center; padding-bottom: 20px;">
+    <img src="data:image/png;base64,{current_logo}" width="80" style="margin-bottom: 15px; border-radius: 50%;">
+    <h1 style="margin: 0; font-size: 2.2rem; font-weight: bold; letter-spacing: 0.5px;">
+        {brand_title}
+    </h1>
+    <div style="margin-top: 8px; margin-bottom: 15px;">
+        <span style="font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: #888888;">
+            {brand_badge}
+        </span>
     </div>
-   
-    <hr style="margin-bottom: 30px;">
+    <p style="margin: 0; font-size: 0.95rem; color: #666666; max-width: 650px; font-style: italic; line-height: 1.5;">
+        {brand_caption}
+    </p>
+</div>
+<hr style="opacity: 0.2; margin-bottom: 30px;">
 """
 
-# Inject the custom responsive header into the app
-st.markdown(responsive_header, unsafe_allow_html=True)
+# Render the dynamic header
+st.markdown(dynamic_header_html, unsafe_allow_html=True)
 
 # --- Sidebar Settings ---
 with st.sidebar:
