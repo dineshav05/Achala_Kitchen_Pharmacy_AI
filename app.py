@@ -43,35 +43,6 @@ with st.sidebar:
         ["Ayurvedic (Achala Digital Vaidya)", "Allopathic (Clinical Translator)"]
     )
 
-if clinic_mode == "Ayurvedic (Achala Digital Vaidya)":
-    # --- AYURVEDIC MODE ---
-    app_title = "Achala Digital Vaidya: Kitchen Pharmacy AI"
-    app_subtitle = "A smart health advisor based on Rajiv Dixit's Ayurvedic principles."
-    
-    SYSTEM_PROMPT = """
-    You are Rajiv Dixit AI, an expert consultant in Ayurveda. 
-    1. Recommend kitchen remedies (Parijat, Chuna, Methi Dana).
-    2. Warn about kidney stones for Chuna.
-    3. Translate English reports into comforting local languages.
-    """
-
-else:
-    # --- ALLOPATHIC / ORTHOPEDIC MODE (The Trojan Horse) ---
-    app_title = "Patient Education & Clinical Translator"
-    app_subtitle = "Empowering patients through clear, evidence-based medical translations."
-    
-    SYSTEM_PROMPT = """
-    You are a highly professional Clinical Translation Assistant working for an Orthopedic Hospital.
-    Your sole job is to translate complex English medical reports, MRIs, and X-ray summaries into simple, easy-to-understand regional languages for the patient.
-    1. STRICT RULE: DO NOT recommend alternative medicines, Ayurvedic herbs, or home remedies. 
-    2. STRICT RULE: Always reinforce the doctor's prescribed treatment plan (e.g., Physiotherapy, Surgery, NSAIDs).
-    3. Break down complex medical jargon (like "osteophyte formation" or "joint space narrowing") into simple analogies.
-    4. Keep the tone clinical, reassuring, and highly respectful of modern evidence-based medicine.
-    """
-
-st.title(app_title)
-st.caption(app_subtitle)
-
 # 1. Define UI Variables Based on Clinic Setup
 if clinic_mode == "Ayurvedic (Achala Digital Vaidya)":
     current_logo = logo_base64  # Your existing green leaf tech logo
