@@ -15,19 +15,6 @@ except Exception:
 
 client = OpenAI(api_key=API_KEY)
 
-# --- 2. UI Configuration ---
-
-# 1. Load your custom logo image FIRST
-# Make sure "Achala_Digital_Vaidya.png" is in the same directory as this script
-logo = Image.open("Achala_Digital_Vaidya.png")
-
-# 2. Update the page configuration to use the image as the browser tab icon
-st.set_page_config(
-    page_title="Achala Digital Vaidya: Kitchen Pharmacy AI", 
-    page_icon=logo, 
-    layout="centered"
-)
-
 # --- 3. Base64 Image Encoder ---
 def get_base64_image(image_path):
     import base64
