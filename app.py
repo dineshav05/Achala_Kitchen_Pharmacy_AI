@@ -43,7 +43,7 @@ responsive_header = f"""
         <img src="data:image/png;base64,{logo_base64}" width="90" style="margin-bottom: 15px;">
         <h1 style="margin: 0; padding: 0; line-height: 1.2;">Achala Digital Vaidya:<br>Kitchen Pharmacy AI</h1>
         <p style="color: #888888; font-size: 0.95rem; margin-top: 10px; margin-bottom: 20px;">
-            A smart health advisor based on Rajiv Dixit's Ayurvedic principles for joint and back pain.
+            "Decode your diagnosis. Heal with heritage. An empowering Ayurvedic guide to joint and back pain, inspired by Shri Rajiv Dixit Ji."
         </p>
     </div>
     <hr style="margin-bottom: 30px;">
