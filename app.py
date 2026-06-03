@@ -96,7 +96,7 @@ dynamic_header_html = f"""
         {brand_caption}
     </p>
 </div>
-<hr style="opacity: 0.2; margin-bottom: 30px;">
+<hr style="opacity: 0.2; margin-bottom: 10px;">
 """
 
 # Render the dynamic header
