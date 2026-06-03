@@ -82,8 +82,8 @@ else:
 
 # 2. Inject the variables into a SINGLE dynamic HTML header
 dynamic_header_html = f"""
-<div style="display: flex; flex-direction: column; align-items: center; text-align: center; padding-bottom: 20px;">
-    <img src="data:image/png;base64,{current_logo}" width="80" style="margin-bottom: 15px; border-radius: 50%;">
+<div style="display: flex; flex-direction: column; align-items: center; text-align: center; padding-bottom: 10px;">
+    <img src="data:image/png;base64,{current_logo}" width="80" style="margin-bottom: 8px; border-radius: 50%;">
     <h1 style="margin: 0; font-size: 2.2rem; font-weight: bold; letter-spacing: 0.5px;">
         {brand_title}
     </h1>
