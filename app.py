@@ -4,6 +4,8 @@ from openai import OpenAI
 import base64
 import hashlib
 import markdown
+from io import BytesIO
+from xhtml2pdf import pisa
 
 # 1. Initialize the OpenAI Client Safely
 # This tells the code to look for the key in Streamlit's secure dashboard, NOT in the code.
@@ -326,70 +328,63 @@ if user_input := st.chat_input("Describe your pain or upload an image above...")
                 # We use the 'current_logo' variable defined in your clinic setup!
                 display_letterhead_report(ai_response, current_logo)
                 
-                # 2. Build the printable HTML version
+               # 2. Build the printable PDF version
                 # First, translate the AI's Markdown into beautifully structured HTML
                 structured_html_content = markdown.markdown(ai_response, extensions=['extra', 'sane_lists', 'nl2br'])
                 
-                # Now, inject it into a professionally styled medical template using our dynamic variables
+                # Inject it into a PDF-optimized template (using tables for perfect alignment)
                 report_html = f"""
                 <html>
                 <head>
                     <meta charset="utf-8">
                     <style>
-                        /* Professional Medical Report CSS Styling */
-                        body {{ font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #2b2b2b; background-color: #f4f7f6; padding: 40px; }}
-                        .report-container {{ max-width: 800px; margin: 0 auto; background-color: #ffffff; padding: 50px; border-top: 8px solid #0f4c5c; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border-radius: 8px; }}
-                        .header-section {{ display: flex; align-items: center; border-bottom: 2px solid #e0e0e0; padding-bottom: 20px; margin-bottom: 30px; }}
-                        .header-text h2 {{ margin: 0; color: #0f4c5c; font-size: 28px; letter-spacing: 0.5px; }}
-                        .header-text p {{ margin: 5px 0 0 0; color: #666; font-weight: bold; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }}
-                        
-                        /* Translating AI Markdown elements into clean medical formatting */
-                        .content-section {{ line-height: 1.8; font-size: 15px; color: #333; }}
-                        .content-section h3 {{ color: #0f4c5c; border-bottom: 1px solid #f0f0f0; padding-bottom: 8px; margin-top: 35px; font-size: 20px; }}
-                        .content-section ul {{ padding-left: 20px; margin-bottom: 20px; }}
-                        .content-section li {{ margin-bottom: 10px; }}
-                        .content-section strong {{ color: #1a1a1a; }}
-                        
-                        .footer-section {{ margin-top: 50px; border-top: 1px solid #e0e0e0; padding-top: 20px; font-size: 12px; color: #888; text-align: center; line-height: 1.5; }}
+                        @page {{ size: a4 portrait; margin: 2cm; }}
+                        body {{ font-family: 'Helvetica', sans-serif; color: #2b2b2b; font-size: 14px; line-height: 1.6; }}
+                        .content-section h3 {{ color: #0f4c5c; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; margin-top: 25px; font-size: 18px; }}
+                        .content-section ul {{ padding-left: 15px; }}
+                        .content-section li {{ margin-bottom: 8px; }}
+                        .footer-section {{ text-align: center; font-size: 11px; color: #888; border-top: 1px solid #e0e0e0; padding-top: 15px; margin-top: 40px; }}
                     </style>
                 </head>
                 <body>
-                    <div class="report-container">
-                        <div class="header-section">
-                            <!-- Dynamically injects either the Leaf or the Blue Cross -->
-                            <img src="data:image/png;base64,{current_logo}" width="80" style="margin-right: 25px;">
-                            <div class="header-text">
-                                <!-- Dynamically injects "Achala Enterprises" OR "Clinical Translation Portal" -->
-                                <h2>{pdf_hospital_name}</h2>
-                                <p>{pdf_sub_header}</p>
-                            </div>
-                        </div>
-                        
-                        <div class="content-section">
-                            {structured_html_content}
-                        </div>
-                        
-                        <div class="footer-section">
-                            <!-- Dynamically injects the Rajiv Dixit disclaimer OR the Allopathic disclaimer -->
-                            {pdf_footer_text}
-                        </div>
+                    <table style="width: 100%; border-bottom: 2px solid #0f4c5c; padding-bottom: 10px; margin-bottom: 20px;">
+                        <tr>
+                            <td style="width: 15%; vertical-align: middle;">
+                                <img src="data:image/png;base64,{current_logo}" width="70">
+                            </td>
+                            <td style="width: 85%; vertical-align: middle; text-align: left;">
+                                <h2 style="margin: 0; color: #0f4c5c; font-size: 26px; letter-spacing: 0.5px;">{pdf_hospital_name}</h2>
+                                <p style="margin: 3px 0 0 0; color: #666; font-weight: bold; font-size: 13px; text-transform: uppercase;">{pdf_sub_header}</p>
+                            </td>
+                        </tr>
+                    </table>
+                    
+                    <div class="content-section">
+                        {structured_html_content}
+                    </div>
+                    
+                    <div class="footer-section">
+                        {pdf_footer_text}
                     </div>
                 </body>
                 </html>
                 """
                 
-                # 3. Native Download Button 
-                st.download_button(
-                    label="📥 Download Medical Report",
-                    data=report_html,
-                    file_name="Report.html",
-                    mime="text/html",
-                    type="primary"
-                )
-                    
-            else:
-                # If it is a normal text chat, render normal chat text
-                st.markdown(ai_response)
+                # 3. Generate the PDF inside a hidden memory buffer
+                pdf_buffer = BytesIO()
+                pisa_status = pisa.CreatePDF(report_html, dest=pdf_buffer)
+                
+                # 4. Display the Download Button
+                if not pisa_status.err:
+                    st.download_button(
+                        label="📄 Download Official PDF Report",
+                        data=pdf_buffer.getvalue(),
+                        file_name="Medical_Analysis_Report.pdf",
+                        mime="application/pdf",
+                        type="primary"
+                    )
+                else:
+                    st.error("⚠️ Error generating the PDF report. Please try again.")
             
             # Save assistant's reply to history
             st.session_state.messages.append({"role": "assistant", "content": ai_response})
