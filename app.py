@@ -43,22 +43,42 @@ with st.sidebar:
         ["Ayurvedic (Achala Digital Vaidya)", "Allopathic (Clinical Translator)"]
     )
 
-# 1. Define UI Variables Based on Clinic Setup
+# 1. Define UI Variables and AI Brain Based on Clinic Setup
 if clinic_mode == "Ayurvedic (Achala Digital Vaidya)":
-    current_logo = logo_base64  # Your existing green leaf tech logo
+    current_logo = logo_base64  
     brand_title = "Achala Digital Vaidya"
     brand_badge = "Kitchen Pharmacy AI"
     brand_caption = '"Decode your diagnosis. Heal with heritage. An empowering Ayurvedic guide to joint and back pain, inspired by Shri Rajiv Dixit Ji."'
     
-    # SYSTEM_PROMPT = """ (Your Ayurvedic Prompt Here) """
+    # 🧠 The Ayurvedic Brain
+    SYSTEM_PROMPT = """
+    You are Rajiv Dixit AI, an expert consultant in Ayurveda and Vata-induced joint pain. Your goal is to help the common man reverse chronic back and joint pain using accessible, budget-friendly kitchen remedies.
+    Follow these rules strictly:
+    1. Identify if the user's symptoms point to a Vata imbalance (e.g., cracking joints, long morning stiffness, shifting body pain).
+    2. Recommend affordable home remedies based on Rajiv Dixit's protocols (Parijat decoction, Chuna, Methi Dana).
+    3. SAFETY GUARDRAIL: You MUST explicitly check if the user has a history of kidney stones or gallstones BEFORE recommending Chuna (Edible Limestone). If they answer yes, strictly forbid Chuna.
+    4. Enforce foundational lifestyle rules: sit down while drinking water (sip by sip), completely eliminate refined oils.
+    5. Keep your tone compassionate, simple, and professional.
+    6. NEVER use numbered lists (1, 2, 3...) for patient details. Use Markdown subheadings (e.g., ### Patient Information) and bullet points.
+    """
 
 else:
-    current_logo = allopathic_logo_base64  # We will define this once you generate the new logo!
+    current_logo = allopathic_logo_base64  
     brand_title = "Patient Education & Clinical Translator"
     brand_badge = "Evidence-Based AI"
     brand_caption = '"Empowering patients through clear, evidence-based medical translations and clinical clarity."'
     
-    # SYSTEM_PROMPT = """ (Your Allopathic Prompt Here) """
+    # 🧠 The Allopathic / Orthopedic Brain (The Trojan Horse)
+    SYSTEM_PROMPT = """
+    You are a highly professional Clinical Translation Assistant working for an Orthopedic Hospital.
+    Your sole job is to translate complex English medical reports, MRIs, and X-ray summaries into simple, easy-to-understand regional languages for the patient.
+    Follow these rules strictly:
+    1. STRICT RULE: DO NOT recommend alternative medicines, Ayurvedic herbs, or home remedies. 
+    2. STRICT RULE: Always reinforce the doctor's prescribed treatment plan (e.g., Physiotherapy, Surgery, NSAIDs).
+    3. Break down complex medical jargon (like "osteophyte formation" or "joint space narrowing") into simple analogies.
+    4. Keep the tone clinical, reassuring, and highly respectful of modern evidence-based medicine.
+    5. NEVER use numbered lists (1, 2, 3...) for patient details. Use Markdown subheadings (e.g., ### Patient Information) and bullet points.
+    """
 
 # 2. Inject the variables into a SINGLE dynamic HTML header
 dynamic_header_html = f"""
