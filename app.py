@@ -38,45 +38,6 @@ def get_base64_image(image_path):
 logo_base64 = get_base64_image("Achala_Digital_Vaidya.png")
 allopathic_logo_base64 = get_base64_image("Allopatic_Clinic.png")
 
-# 1. Define UI Variables Based on Clinic Setup
-if clinic_mode == "Ayurvedic (Achala Digital Vaidya)":
-    current_logo = logo_base64  # Your existing green leaf tech logo
-    brand_title = "Achala Digital Vaidya"
-    brand_badge = "Kitchen Pharmacy AI"
-    brand_caption = '"Decode your diagnosis. Heal with heritage. An empowering Ayurvedic guide to joint and back pain, inspired by Shri Rajiv Dixit Ji."'
-    
-    # SYSTEM_PROMPT = """ (Your Ayurvedic Prompt Here) """
-
-else:
-    current_logo = allopathic_logo_base64  # We will define this once you generate the new logo!
-    brand_title = "Patient Education & Clinical Translator"
-    brand_badge = "Evidence-Based AI"
-    brand_caption = '"Empowering patients through clear, evidence-based medical translations and clinical clarity."'
-    
-    # SYSTEM_PROMPT = """ (Your Allopathic Prompt Here) """
-
-# 2. Inject the variables into a SINGLE dynamic HTML header
-dynamic_header_html = f"""
-<div style="display: flex; flex-direction: column; align-items: center; text-align: center; padding-bottom: 20px;">
-    <img src="data:image/png;base64,{current_logo}" width="80" style="margin-bottom: 15px; border-radius: 50%;">
-    <h1 style="margin: 0; font-size: 2.2rem; font-weight: bold; letter-spacing: 0.5px;">
-        {brand_title}
-    </h1>
-    <div style="margin-top: 8px; margin-bottom: 15px;">
-        <span style="font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: #888888;">
-            {brand_badge}
-        </span>
-    </div>
-    <p style="margin: 0; font-size: 0.95rem; color: #666666; max-width: 650px; font-style: italic; line-height: 1.5;">
-        {brand_caption}
-    </p>
-</div>
-<hr style="opacity: 0.2; margin-bottom: 30px;">
-"""
-
-# Render the dynamic header
-st.markdown(dynamic_header_html, unsafe_allow_html=True)
-
 # --- Sidebar Settings ---
 with st.sidebar:
     st.title("⚙️ Preferences")
@@ -123,6 +84,45 @@ else:
 
 st.title(app_title)
 st.caption(app_subtitle)
+
+# 1. Define UI Variables Based on Clinic Setup
+if clinic_mode == "Ayurvedic (Achala Digital Vaidya)":
+    current_logo = logo_base64  # Your existing green leaf tech logo
+    brand_title = "Achala Digital Vaidya"
+    brand_badge = "Kitchen Pharmacy AI"
+    brand_caption = '"Decode your diagnosis. Heal with heritage. An empowering Ayurvedic guide to joint and back pain, inspired by Shri Rajiv Dixit Ji."'
+    
+    # SYSTEM_PROMPT = """ (Your Ayurvedic Prompt Here) """
+
+else:
+    current_logo = allopathic_logo_base64  # We will define this once you generate the new logo!
+    brand_title = "Patient Education & Clinical Translator"
+    brand_badge = "Evidence-Based AI"
+    brand_caption = '"Empowering patients through clear, evidence-based medical translations and clinical clarity."'
+    
+    # SYSTEM_PROMPT = """ (Your Allopathic Prompt Here) """
+
+# 2. Inject the variables into a SINGLE dynamic HTML header
+dynamic_header_html = f"""
+<div style="display: flex; flex-direction: column; align-items: center; text-align: center; padding-bottom: 20px;">
+    <img src="data:image/png;base64,{current_logo}" width="80" style="margin-bottom: 15px; border-radius: 50%;">
+    <h1 style="margin: 0; font-size: 2.2rem; font-weight: bold; letter-spacing: 0.5px;">
+        {brand_title}
+    </h1>
+    <div style="margin-top: 8px; margin-bottom: 15px;">
+        <span style="font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: #888888;">
+            {brand_badge}
+        </span>
+    </div>
+    <p style="margin: 0; font-size: 0.95rem; color: #666666; max-width: 650px; font-style: italic; line-height: 1.5;">
+        {brand_caption}
+    </p>
+</div>
+<hr style="opacity: 0.2; margin-bottom: 30px;">
+"""
+
+# Render the dynamic header
+st.markdown(dynamic_header_html, unsafe_allow_html=True)
 
 # 4. Initialize Chat History in Session State
 if "messages" not in st.session_state:
