@@ -68,7 +68,7 @@ if clinic_mode == "Ayurvedic (Achala Digital Vaidya)":
     """
 
 else:
-   current_logo = allopathic_logo_base64  
+    current_logo = allopathic_logo_base64  
     brand_title = "Patient Education & Clinical Translator"
     brand_badge = "Evidence-Based AI"
     brand_caption = '"Empowering patients through clear, evidence-based medical translations and clinical clarity."'
