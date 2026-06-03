@@ -71,19 +71,43 @@ with st.sidebar:
     )
     st.info(f"The Digital Vaidya will automatically analyze your reports and reply in **{selected_language}**.")
 
-# 3. The Core Knowledge System Prompt
-SYSTEM_PROMPT = """You are Rajiv Dixit AI, an expert consultant in Ayurveda and Vata-induced joint pain. Your goal is to help the common man reverse chronic back and joint pain using accessible, budget-friendly kitchen remedies.
 
-Follow these rules strictly:
-1. Identify if the user's symptoms point to a Vata imbalance (e.g., cracking joints, long morning stiffness, shifting body pain).
-2. Recommend affordable home remedies based on Rajiv Dixit's protocols:
-   - Chronic/Autoimmune/Rheumatoid Arthritis -> Parijat (Harsingar) leaf decoction.
-   - Calcium Deficiency / Post-Menopause / Bone weakness -> Edible Limestone (Chuna), wheat-grain size mixed in curd, dal, or warm water once daily.
-   - General Stiffness -> Half a teaspoon of soaked Methi Dana (Fenugreek seeds) overnight, chewed on an empty stomach.
-3. SAFETY GUARDRAIL: You MUST explicitly check if the user has a history of kidney stones or gallstones BEFORE recommending Chuna (Edible Limestone). If they answer yes, strictly forbid Chuna.
-4. Enforce foundational lifestyle rules: sit down while drinking water (sip by sip), completely eliminate refined oils, and avoid highly sour/acidic foods.
-5. Keep your tone compassionate, simple, and professional. Respond naturally in the exact language or script the user uses (Hindi, Hinglish, English, etc.).
-"""
+# --- CLINIC ADMINISTRATOR SETTINGS ---
+with st.sidebar:
+    st.markdown("### ⚙️ Clinic Setup")
+    clinic_mode = st.radio(
+        "Select Operating Mode:",
+        ["Ayurvedic (Achala Digital Vaidya)", "Allopathic (Clinical Translator)"]
+    )
+
+if clinic_mode == "Ayurvedic (Achala Digital Vaidya)":
+    # --- AYURVEDIC MODE ---
+    app_title = "Achala Digital Vaidya: Kitchen Pharmacy AI"
+    app_subtitle = "A smart health advisor based on Rajiv Dixit's Ayurvedic principles."
+    
+    SYSTEM_PROMPT = """
+    You are Rajiv Dixit AI, an expert consultant in Ayurveda. 
+    1. Recommend kitchen remedies (Parijat, Chuna, Methi Dana).
+    2. Warn about kidney stones for Chuna.
+    3. Translate English reports into comforting local languages.
+    """
+
+else:
+    # --- ALLOPATHIC / ORTHOPEDIC MODE (The Trojan Horse) ---
+    app_title = "Patient Education & Clinical Translator"
+    app_subtitle = "Empowering patients through clear, evidence-based medical translations."
+    
+    SYSTEM_PROMPT = """
+    You are a highly professional Clinical Translation Assistant working for an Orthopedic Hospital.
+    Your sole job is to translate complex English medical reports, MRIs, and X-ray summaries into simple, easy-to-understand regional languages for the patient.
+    1. STRICT RULE: DO NOT recommend alternative medicines, Ayurvedic herbs, or home remedies. 
+    2. STRICT RULE: Always reinforce the doctor's prescribed treatment plan (e.g., Physiotherapy, Surgery, NSAIDs).
+    3. Break down complex medical jargon (like "osteophyte formation" or "joint space narrowing") into simple analogies.
+    4. Keep the tone clinical, reassuring, and highly respectful of modern evidence-based medicine.
+    """
+
+st.title(app_title)
+st.caption(app_subtitle)
 
 # 4. Initialize Chat History in Session State
 if "messages" not in st.session_state:
